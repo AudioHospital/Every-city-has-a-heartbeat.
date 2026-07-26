@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Frequency Oasis // WORLD SIGNAL</title>
+<meta name="description" content="A living atmosphere of Earth's live radio stations.">
+<meta name="theme-color" content="#05070c">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ HOME ============ -->
+<section id="home">
+  <canvas id="starfield"></canvas>
+  <div class="aurora"></div>
+  <canvas id="homeGlobe"></canvas>
+  <div class="home-copy">
+    <p class="eyebrow">FREQUENCY OASIS</p>
+    <h1 id="heartbeatLine">Every city has a heartbeat.</h1>
+    <button id="enterBtn" class="enter-btn">
+      <span>ENTER THE SIGNAL</span>
+    </button>
+  </div>
+</section>
+
+<!-- ============ WORLD ============ -->
+<section id="world" class="hidden">
+
+  <canvas id="globeCanvas"></canvas>
+
+  <!-- top bar -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <span>WORLD SIGNAL</span>
+    </div>
+    <div class="topbar-stats">
+      <div class="stat"><span id="statStations">0</span><label>signals live</label></div>
+      <div class="stat"><span id="statCountries">0</span><label>territories</label></div>
+      <div class="stat clock"><span id="statUTC">--:--</span><label>UTC</label></div>
+    </div>
+    <div class="topbar-actions">
+      <button class="ghost-btn" data-panel="lab" title="Audio Lab">LAB</button>
+      <button class="ghost-btn" data-panel="weather" title="Sound Weather">WEATHER</button>
+      <button class="ghost-btn" data-panel="archive" title="The Archive">ARCHIVE</button>
+      <button class="ghost-btn" data-panel="badges" title="Achievements">◆</button>
+    </div>
+  </header>
+
+  <!-- curious / search -->
+  <div class="control-dock">
+    <button id="curiousBtn" class="curious-btn">
+      <span class="curious-ring"></span>
+      I FEEL CURIOUS
+    </button>
+    <div class="search-wrap">
+      <input id="searchInput" type="text" placeholder="Find a city, country, or genre…" autocomplete="off">
+      <div id="searchResults" class="search-results hidden"></div>
+    </div>
+    <button id="filtersToggle" class="filtersToggle" aria-label="Legend and Time Machine" title="Legend and Time Machine">◈</button>
+  </div>
+
+  <!-- legend -->
+  <div class="legend" id="legend"></div>
+
+  <!-- time machine -->
+  <div class="timemachine">
+    <label>TIME MACHINE</label>
+    <input id="decadeSlider" type="range" min="0" max="7" step="1" value="7">
+    <div class="decade-ticks">
+      <span>1950</span><span>60</span><span>70</span><span>80</span><span>90</span><span>2000</span><span>10</span><span>Today</span>
+    </div>
+  </div>
+
+  <!-- radar toast -->
+  <div id="radarToastHost" class="radar-toast-host"></div>
+
+  <!-- global heartbeat pulse label -->
+  <div class="heartbeat-readout">
+    <span class="pulse-dot"></span>
+    <span id="heartbeatLabel">calibrating global heartbeat…</span>
+  </div>
+
+  <!-- cluster / signal stream panel -->
+  <aside id="streamPanel" class="stream-panel hidden">
+    <div class="panel-head">
+      <div>
+        <p class="panel-eyebrow" id="clusterEyebrow">SIGNAL CLUSTER</p>
+        <h3 id="clusterTitle">—</h3>
+      </div>
+      <button class="close-btn" data-close="streamPanel">×</button>
+    </div>
+    <div id="streamList" class="stream-list"></div>
+  </aside>
+
+  <!-- discover facts panel -->
+  <aside id="factsPanel" class="facts-panel hidden">
+    <div class="panel-head">
+      <div>
+        <p class="panel-eyebrow">DIGITAL TRAVELLER</p>
+        <h3 id="factsTitle">—</h3>
+      </div>
+      <button class="close-btn" data-close="factsPanel">×</button>
+    </div>
+    <div id="factsBody" class="facts-body"></div>
+  </aside>
+
+  <!-- side utility panels -->
+  <aside id="weatherPanel" class="util-panel hidden">
+    <div class="panel-head"><h3>Sound Weather</h3><button class="close-btn" data-close="weatherPanel">×</button></div>
+    <div id="weatherBody" class="util-body"></div>
+  </aside>
+
+  <aside id="archivePanel" class="util-panel hidden">
+    <div class="panel-head"><h3>The Archive</h3><button class="close-btn" data-close="archivePanel">×</button></div>
+    <div id="archiveBody" class="util-body"></div>
+  </aside>
+
+  <aside id="badgesPanel" class="util-panel hidden">
+    <div class="panel-head"><h3>Achievements</h3><button class="close-btn" data-close="badgesPanel">×</button></div>
+    <div id="badgesBody" class="util-body"></div>
+  </aside>
+
+  <!-- ============ PLAYER ============ -->
+  <div id="player" class="player hidden">
+    <div class="player-glass">
+      <div class="player-head">
+        <div class="player-id">
+          <span id="playerFlag" class="flag">🌐</span>
+          <div>
+            <h2 id="playerName">—</h2>
+            <p id="playerLoc">—</p>
+          </div>
+        </div>
+        <button id="playerClose" class="close-btn">×</button>
+      </div>
+
+      <div class="player-scopes">
+        <canvas id="wheelCanvas" class="scope wheel"></canvas>
+        <canvas id="specCanvas" class="scope spectrum"></canvas>
+        <canvas id="scopeCanvas" class="scope oscilloscope"></canvas>
+        <canvas id="vectorCanvas" class="scope vector"></canvas>
+      </div>
+
+      <div class="vu-row">
+        <div class="vu"><label>L</label><div class="vu-track"><div id="vuL" class="vu-fill"></div></div></div>
+        <div class="vu"><label>R</label><div class="vu-track"><div id="vuR" class="vu-fill"></div></div></div>
+        <div class="vu-peak">PEAK <span id="peakVal">-∞</span> dB</div>
+      </div>
+
+      <div class="player-meta">
+        <div class="meta-item"><label>Genre</label><span id="metaGenre">—</span></div>
+        <div class="meta-item"><label>Bitrate</label><span id="metaBitrate">—</span></div>
+        <div class="meta-item"><label>Language</label><span id="metaLang">—</span></div>
+        <div class="meta-item"><label>Local time</label><span id="metaTime">—</span></div>
+        <div class="meta-item"><label>Weather</label><span id="metaWeather">—</span></div>
+        <div class="meta-item"><label>Sunrise / Sunset</label><span id="metaSun">—</span></div>
+        <div class="meta-item"><label>Signal</label><span id="metaSignal">—</span></div>
+        <div class="meta-item"><label>Latency</label><span id="metaLatency">—</span></div>
+      </div>
+
+      <div class="now-playing">
+        <span id="nowPlayingText">Tuning in…</span>
+      </div>
+
+      <div class="transport">
+        <button id="playPauseBtn" class="play-btn">▶</button>
+        <div class="volume-wheel">
+          <input id="volumeRange" type="range" min="0" max="100" value="70">
+          <label>VOLUME</label>
+        </div>
+        <a id="stationSite" class="ghost-btn small" href="#" target="_blank" rel="noopener">WEBSITE ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <audio id="audioEl" crossorigin="anonymous" preload="none"></audio>
+
+</section>
+
+<div id="loadingScreen" class="loading-screen hidden">
+  <div class="loading-ring"></div>
+  <p id="loadingText">Establishing contact with the ionosphere…</p>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
